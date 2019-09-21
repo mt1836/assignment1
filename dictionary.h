@@ -28,7 +28,6 @@ typedef struct node
 node;
 
 typedef node* hashmap_t;
-
 /**
  * Array misspelled is populated with words that are misspelled. Returns the length of misspelled.
  */
@@ -38,7 +37,7 @@ typedef node* hashmap_t;
  *  hashtable:  The hash table used to determine spelling
  *  misspelled: An empty char* array to be populated with misspelled words.
  *              This array will never be greater than 1000 words long.
- *            
+ *
  * Returns:
  *  int:        The number of words in the misspelled arary.
  *
@@ -57,12 +56,12 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[]);
  * Inputs:
  *  word:       A word to check the spelling of.
  *  hashtable:  The hash table used to determine spelling
- *            
+ *
  * Returns:
  *  bool:       A boolean value indicating if the word was correctly spelled.
  *
  * Modifies:
- *  
+ *
  * Example:
  *  bool correct  = check_word(word, hashtable);
  **/
@@ -75,7 +74,7 @@ bool check_word(const char* word, hashmap_t hashtable[]);
  * Inputs:
  *  dictionary_file:    Path to the words file.
  *  hashtable:          The hash table to be populated.
- *            
+ *
  * Returns:
  *  bool:       Whether or not the hashmap successfully populated.
  *
