@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #define DICTIONARY "wordlist.txt"
+<<<<<<< HEAD
 #define TESTDICT "test_worlist.txt"
 
 START_TEST(test_dictionary_normal)
@@ -14,12 +15,15 @@ START_TEST(test_dictionary_normal)
     // this as an exercise.
 }
 END_TEST
+=======
+>>>>>>> e83dccaf68d7550dfd7b84b7101456d69063bf6a
 
 START_TEST(test_check_word_normal)
 {
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
     const char* correct_word = "Justice";
+<<<<<<< HEAD
     const char* punctuation_word_2 = "pl.ace";
     ck_assert(check_word(correct_word, hashtable));
     ck_assert(!check_word(punctuation_word_2, hashtable));
@@ -46,6 +50,23 @@ START_TEST(test_check_words_normal)
     ck_assert_msg(strcmp(misspelled[0], expected[0]) == 0);
     ck_assert_msg(strcmp(misspelled[1], expected[1]) == 0);
     ck_assert_msg(strcmp(misspelled[2], expected[2]) == 0);
+=======
+    const char* incorrect_word = "Caoimhín";
+    ck_assert(check_word(correct_word, hashtable));
+    ck_assert(!check_word(incorrect_word, hashtable));
+}
+END_TEST
+
+START_TEST(test_check_word_buffer_overflow)
+{
+    hashmap_t hashtable[HASH_SIZE];
+    load_dictionary(DICTIONARY, hashtable);
+    char incorrect_word[500000];
+    for(int i = 0; i < 499999; i++)
+        incorrect_word[i] = 'A';
+    incorrect_word[499999] = 0;
+    ck_assert(!check_word(incorrect_word, hashtable));
+>>>>>>> e83dccaf68d7550dfd7b84b7101456d69063bf6a
 }
 END_TEST
 
@@ -57,7 +78,11 @@ check_word_suite(void)
     suite = suite_create("check_word");
     check_word_case = tcase_create("Core");
     tcase_add_test(check_word_case, test_check_word_normal);
+<<<<<<< HEAD
     tcase_add_test(check_word_case, test_check_words_normal);
+=======
+    tcase_add_test(check_word_case, test_check_word_buffer_overflow);
+>>>>>>> e83dccaf68d7550dfd7b84b7101456d69063bf6a
     suite_add_tcase(suite, check_word_case);
 
     return suite;
@@ -69,7 +94,7 @@ main(void)
     int failed;
     Suite *suite;
     SRunner *runner;
-
+    
     suite = check_word_suite();
     runner = srunner_create(suite);
     srunner_run_all(runner, CK_NORMAL);
@@ -77,3 +102,4 @@ main(void)
     srunner_free(runner);
     return (failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
+
