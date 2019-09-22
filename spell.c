@@ -128,6 +128,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
   int c, counter=0;
   int n = 0;
   char *word;
+  hashmap_t temp;
   word=(char*)malloc(LENGTH*sizeof(char));
    if(fp == NULL)
    {
@@ -141,6 +142,16 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
       {
         if(counter==0)
         {
+          free(word);
+          for(int f=0;f<HASH_SIZE;f++)
+          {
+            while(hashtable[f])
+              {
+                temp=hashtable[f]->next;
+                free(hashtable[f]);
+                hashtable[f]=temp;
+              }
+          }
           break;
         }
         else
@@ -153,6 +164,16 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
           {
             misspelled[num_misspelled]=word;
             num_misspelled++;
+          }
+          free(word);
+          for(int f=0;f<HASH_SIZE;f++)
+          {
+            while(hashtable[f])
+              {
+                temp=hashtable[f]->next;
+                free(hashtable[f]);
+                hashtable[f]=temp;
+              }
           }
           break;
         }
@@ -175,6 +196,16 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
       {
         if(counter==0)
         {
+          free(word);
+          for(int f=0;f<HASH_SIZE;f++)
+          {
+            while(hashtable[f])
+              {
+                temp=hashtable[f]->next;
+                free(hashtable[f]);
+                hashtable[f]=temp;
+              }
+          }
           break;
         }
         else
@@ -188,15 +219,12 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
             misspelled[num_misspelled]=word;
             num_misspelled++;
           }
-        word=(char*)malloc(LENGTH*sizeof(char));
+//          free(word);
+          word=(char*)malloc(LENGTH*sizeof(char));
         }
       }
     } while(1);
-
-   for(int z=0;z<20;z++)
-   {
-
-   }
+//    fclose(fp);
    return num_misspelled;
  }
 
