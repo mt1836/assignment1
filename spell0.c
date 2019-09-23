@@ -134,8 +134,9 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
   int num_misspelled=0;
   int c, counter=0;
-//  int n = 0;
+  int n = 0;
   char *word;
+  hashmap_t temp;
   word=(char*)malloc(LENGTH*sizeof(char));
    if(fp == NULL)
    {
@@ -151,7 +152,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         if(counter==0)
         {
           free(word);
-        /*  for(int f=0;f<HASH_SIZE;f++)
+          for(int f=0;f<HASH_SIZE;f++)
           {
             while(hashtable[f])
               {
@@ -159,7 +160,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 free(hashtable[f]);
                 hashtable[f]=temp;
               }
-          }*/
+          }
           break;
         }
         else
@@ -174,7 +175,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
             num_misspelled++;
           }
           free(word);
-    /*      for(int f=0;f<HASH_SIZE;f++)
+          for(int f=0;f<HASH_SIZE;f++)
           {
             while(hashtable[f])
               {
@@ -182,7 +183,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 free(hashtable[f]);
                 hashtable[f]=temp;
               }
-          }*/
+          }
           break;
         }
       }
