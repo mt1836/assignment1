@@ -9,7 +9,7 @@
 int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[]);
 bool check_word(const char* word, hashmap_t hashtable[]);
 bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]);
-char* remove_punctuation(char* word);
+char* remove_punctuation(char* str);
 char* lower_case(char* str);
 
 /**
@@ -89,12 +89,16 @@ bool check_word(const char* word, hashmap_t hashtable[])
 {
   int bucket;
   hashmap_t cursor;
+  char str[LENGTH+2];
 
-  bucket=hash_function(word);
+  strncpy(str,word,LENGTH);
+  //printf("lower_case=%s\n",lower_case(str));
+  //printf("punctuation=%s\n",remove_punctuation(lower_case(str)));
+  bucket=hash_function(remove_punctuation(lower_case(str)));
   cursor=hashtable[bucket];
   while(cursor!=NULL)
   {
-    if(strcmp(word,cursor->word)==0)
+    if(strcmp(str,cursor->word)==0)
     {
       return true;
     }
@@ -126,13 +130,12 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
   int num_misspelled=0;
   int c, counter=0;
-  int n = 0;
   char *word;
-  hashmap_t temp;
   word=(char*)malloc(LENGTH*sizeof(char));
    if(fp == NULL)
    {
 //      perror("Error in opening file");
+      free(word);
       return(-1);
    }
    do
@@ -143,7 +146,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         if(counter==0)
         {
           free(word);
-          for(int f=0;f<HASH_SIZE;f++)
+        /*  for(int f=0;f<HASH_SIZE;f++)
           {
             while(hashtable[f])
               {
@@ -151,22 +154,22 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 free(hashtable[f]);
                 hashtable[f]=temp;
               }
-          }
+          }*/
           break;
         }
         else
         {
           word[counter]='\0';
           counter=0;
-          lower_case(word);
-          remove_punctuation(word);
+//          lower_case(word);
+  //        remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
             misspelled[num_misspelled]=word;
             num_misspelled++;
           }
           free(word);
-          for(int f=0;f<HASH_SIZE;f++)
+    /*      for(int f=0;f<HASH_SIZE;f++)
           {
             while(hashtable[f])
               {
@@ -174,17 +177,19 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 free(hashtable[f]);
                 hashtable[f]=temp;
               }
-          }
+          }*/
           break;
         }
       }
       if(!isspace(c))
       {
-        if(counter>LENGTH-1)
+        if(counter>LENGTH)
         {
-//          word[counter]='\0';
-//          counter=0;
-//          break;
+          word[counter]='\0';
+          counter=0;
+          free(word);
+          word=(char*)malloc(LENGTH*sizeof(char));
+  //        break;
         }
         else
         {
@@ -197,7 +202,8 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         if(counter==0)
         {
           free(word);
-          for(int f=0;f<HASH_SIZE;f++)
+          word=(char*)malloc(LENGTH*sizeof(char));
+  /*        for(int f=0;f<HASH_SIZE;f++)
           {
             while(hashtable[f])
               {
@@ -206,17 +212,19 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
                 hashtable[f]=temp;
               }
           }
-          break;
+          break; */
         }
         else
         {
           word[counter]='\0';
           counter=0;
-          lower_case(word);
-          remove_punctuation(word);
+  //        lower_case(word);
+    //      remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
+  //          printf("%s\n", word);
             misspelled[num_misspelled]=word;
+    //        printf("misspelled[%d]=%s\n",num_misspelled,misspelled[num_misspelled]);
             num_misspelled++;
           }
           free(word);
@@ -224,7 +232,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         }
       }
     } while(1);
-//    fclose(fp);
    return num_misspelled;
  }
 
@@ -240,21 +247,21 @@ char* lower_case(char* str)
   return str;
 }
 
-char* remove_punctuation(char* word)
+char* remove_punctuation(char* str)
 {
-  int index,jindex,b;
+  int index,jindex;
 
-  for(int i=0;i<strlen(word);i++)
+  for(int i=0;i<strlen(str);i++)
   {
-    if(isalpha(word[i]))
+    if(isalpha(str[i]))
     {
       index=i;
       break;
     }
   }
-  for(int j=strlen(word)-1; j>=0;j--)
+  for(int j=strlen(str)-1; j>=0;j--)
   {
-    if(isalpha(word[j]))
+    if(isalpha(str[j]))
     {
       jindex=j;
       break;
@@ -262,11 +269,11 @@ char* remove_punctuation(char* word)
   }
   for(int a=index;a<=jindex;a++)
   {
-    word[a-index]=word[a];
+    str[a-index]=str[a];
   }
-  for(int b=(jindex+1)-index; word[b]!='\0';b++)
+  for(int b=(jindex+1)-index; str[b]!='\0';b++)
   {
-    word[b]='\0';
+    str[b]='\0';
   }
-  return word;
+  return str;
 }
