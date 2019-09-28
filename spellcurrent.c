@@ -91,19 +91,23 @@ bool check_word(const char* word, hashmap_t hashtable[])
 {
   int bucket;
   hashmap_t cursor;
+  char str[LENGTH];
+  char str2[LENGTH];
+  char str3[LENGTH];
 
-  bucket=hash_function(word);
+  strncpy(str,word,LENGTH);
+  strcpy(str2,lower_case(str));
+  strcpy(str3,remove_punctuation(str2));
+  bucket=hash_function(str3);
   cursor=hashtable[bucket];
   while(cursor!=NULL)
   {
-    if(strcmp(word,cursor->word)==0)
+    if(strcmp(str3,cursor->word)==0)
     {
-      printf("Bucket for checked word %s = %d\n", cursor->word,bucket);
       return true;
     }
     cursor=cursor->next;
   }
-  printf("Bucket for checked word %s = None, checked word not in Dictionary\n", cursor->word);
   return false;
 }
 /**
@@ -130,7 +134,12 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
   int num_misspelled=0;
   int c, counter=0;
   char *word;
-  word=(char*)malloc((LENGTH+1)*sizeof(char));
+  char str[LENGTH];
+  char str2[LENGTH];
+  char *str3;
+
+  word=(char*)malloc((LENGTH)*sizeof(char));
+
    if(fp == NULL)
    {
 //      perror("Error in opening file");
@@ -150,20 +159,21 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         {
           word[counter]='\0';
           counter=0;
-          printf("Ingest of word to check = %s\n",word);
-          lower_case(word);
-          remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
-            printf("Word misspelled! = %s\n",word);
-            misspelled[num_misspelled]=word;
+            str3=(char*)malloc((LENGTH)*sizeof(char));
+            strncpy(str,word,LENGTH);
+            //commment
+    //        printf("str at FEOF=%s\n",word);
+            free(word);
+            strcpy(str2,lower_case(str));
+            strcpy(str3,remove_punctuation(str2));
+            misspelled[num_misspelled]=str3;
             num_misspelled++;
-            printf("misspelled[%d]=%s\n",num_misspelled-1,misspelled[num_misspelled-1]);
             break;
           }
           else
           {
-            printf("Modified for check against dictionary = %s --> Not Misspelled\n",word);
             free(word);
             break;
           }
@@ -191,19 +201,19 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         {
           word[counter]='\0';
           counter=0;
-          printf("Ingest of word to check = %s\n",word);
-          lower_case(word);
-          remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
-            printf("Word misspelled! = %s\n",word);
-            misspelled[num_misspelled]=word;
+            str3=(char*)malloc((LENGTH)*sizeof(char));
+            strncpy(str,word,LENGTH);
+  //          printf("str at not=%s\n",word);
+            free(word);
+            strcpy(str2,lower_case(str));
+            strcpy(str3,remove_punctuation(str2));
+            misspelled[num_misspelled]=str3;
             num_misspelled++;
-            printf("misspelled[%d]=%s\n",num_misspelled-1,misspelled[num_misspelled-1]);
           }
           else
           {
-            printf("Modified for check against dictionary = %s --> Not Misspelled\n",word);
             free(word);
           }
           word=(char*)malloc((LENGTH+1)*sizeof(char));
@@ -225,21 +235,21 @@ char* lower_case(char* str)
   return str;
 }
 
-char* remove_punctuation(char* word)
+char* remove_punctuation(char* str)
 {
   int index,jindex;
 
-  for(int i=0;i<strlen(word);i++)
+  for(int i=0;i<strlen(str);i++)
   {
-    if(isalpha(word[i]))
+    if(isalpha(str[i]))
     {
       index=i;
       break;
     }
   }
-  for(int j=strlen(word)-1; j>=0;j--)
+  for(int j=strlen(str)-1; j>=0;j--)
   {
-    if(isalpha(word[j]))
+    if(isalpha(str[j]))
     {
       jindex=j;
       break;
@@ -247,11 +257,11 @@ char* remove_punctuation(char* word)
   }
   for(int a=index;a<=jindex;a++)
   {
-    word[a-index]=word[a];
+    str[a-index]=str[a];
   }
-  for(int b=(jindex+1)-index; word[b]!='\0';b++)
+  for(int b=(jindex+1)-index; str[b]!='\0';b++)
   {
-    word[b]='\0';
+    str[b]='\0';
   }
-  return word;
+  return str;
 }

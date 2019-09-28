@@ -98,12 +98,10 @@ bool check_word(const char* word, hashmap_t hashtable[])
   {
     if(strcmp(word,cursor->word)==0)
     {
-      printf("Bucket for checked word %s = %d\n", cursor->word,bucket);
       return true;
     }
     cursor=cursor->next;
   }
-  printf("Bucket for checked word %s = None, checked word not in Dictionary\n", cursor->word);
   return false;
 }
 /**
@@ -129,8 +127,9 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 {
   int num_misspelled=0;
   int c, counter=0;
+  int n = 0;
   char *word;
-  word=(char*)malloc((LENGTH+1)*sizeof(char));
+  word=(char*)malloc(LENGTH*sizeof(char));
    if(fp == NULL)
    {
 //      perror("Error in opening file");
@@ -150,20 +149,16 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         {
           word[counter]='\0';
           counter=0;
-          printf("Ingest of word to check = %s\n",word);
           lower_case(word);
           remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
-            printf("Word misspelled! = %s\n",word);
             misspelled[num_misspelled]=word;
             num_misspelled++;
-            printf("misspelled[%d]=%s\n",num_misspelled-1,misspelled[num_misspelled-1]);
             break;
           }
           else
           {
-            printf("Modified for check against dictionary = %s --> Not Misspelled\n",word);
             free(word);
             break;
           }
@@ -171,9 +166,11 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
       }
       if(!isspace(c))
       {
-        if(counter>LENGTH)
+        if(counter>LENGTH-1)
         {
-          continue;
+//          word[counter]='\0';
+//          counter=0;
+//          break;
         }
         else
         {
@@ -191,22 +188,18 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
         {
           word[counter]='\0';
           counter=0;
-          printf("Ingest of word to check = %s\n",word);
           lower_case(word);
           remove_punctuation(word);
           if(!check_word(word,hashtable))
           {
-            printf("Word misspelled! = %s\n",word);
             misspelled[num_misspelled]=word;
             num_misspelled++;
-            printf("misspelled[%d]=%s\n",num_misspelled-1,misspelled[num_misspelled-1]);
           }
           else
           {
-            printf("Modified for check against dictionary = %s --> Not Misspelled\n",word);
             free(word);
           }
-          word=(char*)malloc((LENGTH+1)*sizeof(char));
+          word=(char*)malloc(LENGTH*sizeof(char));
         }
       }
     } while(1);
@@ -227,7 +220,7 @@ char* lower_case(char* str)
 
 char* remove_punctuation(char* word)
 {
-  int index,jindex;
+  int index,jindex,b;
 
   for(int i=0;i<strlen(word);i++)
   {

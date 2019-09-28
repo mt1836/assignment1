@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
   }
   for(int m=0;m<MAX_MISSPELLED;m++)
   {
-    printf("misspelled[%d]=%s\n",m,misspelled[m]);
     free(misspelled[m]);
   }
   fclose(fp);
